@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Budget\ExportServiceInterface;
 use Illuminate\Support\Facades\Http;
 
-class YnabBudgetExportService
+class YnabBudgetExportService implements ExportServiceInterface
 {
     protected string $api_url = 'https://api.ynab.com/v1';
 
@@ -26,7 +27,7 @@ class YnabBudgetExportService
         return $this;
     }
 
-    public function fetch()
+    public function execute(): array
     {
         $url = sprintf(
             '%s/budgets/%s/transactions',
@@ -35,7 +36,7 @@ class YnabBudgetExportService
         );
         $response = Http::withToken($this->token)->get($url);
         if ($response->failed()) {
-            return false;
+            return [];
         }
         return $response->json('data.transactions');
     }

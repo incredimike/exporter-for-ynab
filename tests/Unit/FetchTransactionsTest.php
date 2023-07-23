@@ -28,7 +28,7 @@ class FetchTransactionsTest extends TestCase
         $exporter->setStartDate($start_date);
         $exporter->setBudget('last-used');
 
-        $response = $exporter->fetch();
+        $response = $exporter->execute();
 
         $this->assertCount($count, $response);
         $this->assertEquals($start_date, $response[0]['date']);
