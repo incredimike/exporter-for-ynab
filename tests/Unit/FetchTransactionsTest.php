@@ -24,9 +24,10 @@ class FetchTransactionsTest extends TestCase
 
         // set search criteria
         $token = fake()->word();
-        $exporter = new YnabBudgetExportService($token);
+        $exporter = new YnabBudgetExportService();
+        $exporter->setToken($token);
         $exporter->setStartDate($start_date);
-        $exporter->setBudget('last-used');
+        $exporter->setBudgetId('last-used');
 
         $response = $exporter->execute();
 
