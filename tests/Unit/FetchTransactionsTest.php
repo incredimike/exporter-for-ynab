@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Enums\TransactionClearedStatusEnum;
 use App\Enums\TransactionFlagColorEnum;
+use App\Factories\TransactionCollectionFactory;
 use App\Services\YnabBudgetExportService;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
@@ -12,6 +13,13 @@ use Tests\TestCase;
 class FetchTransactionsTest extends TestCase
 {
     use WithFaker;
+
+    private TransactionCollectionFactory $transaction_factory;
+
+    public function setUp(): void {
+        parent::setUp();
+        $this->transaction_factory = $this->app->make(TransactionCollectionFactory::class);
+    }
 
     public function test_can_fetch_transactions(): void
     {
@@ -35,18 +43,19 @@ class FetchTransactionsTest extends TestCase
         $this->assertEquals($start_date, $response[0]['date']);
     }
 
-    protected function generateResponseArray(int $count = 5, string $start_date = '-6 months'): array
+    protected function generateResponseArray(int $count = 5, string $startDate = '-6 months'): array
     {
-        $response = [
+        $transactions = $this->transaction_factory
+            ->count($count)
+            ->startDate($startDate)
+            ->make();
+
+        return [
             'data' => [
-                'transactions' => [],
+                'transactions' => $transactions,
                 'server_knowledge' => fake()->numberBetween(10000, 99999)
             ]
         ];
-        for ($i=0; $i < $count; $i++) {
-            $response['data']['transactions'][] = $this->generateTransaction( $start_date );
-        }
-        return $response;
     }
 
     protected function generateSubTransactions( int $total ): array
