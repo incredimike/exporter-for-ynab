@@ -1,6 +1,6 @@
 <?php
 
-namespace Factories;
+namespace App\Factories;
 
 use App\Enums\TransactionClearedStatusEnum;
 use App\Enums\TransactionFlagColorEnum;
@@ -8,13 +8,13 @@ use App\Enums\TransactionFlagColorEnum;
 class TransactionCollectionFactory
 {
     protected int $count = 5;
-    protected string $startDate;
+    protected string $startDate = '-6 months';
 
     public function make()
     {
         $transactions = [];
-        for ($i=0; $i < $this->getCount(); $i++) {
-            $transactions[] = $this->generateTransaction( $this->getStartDate() );
+        for ($i=0; $i < $this->count; $i++) {
+            $transactions[] = $this->generateTransaction( $this->startDate );
         }
         return $transactions;
     }
@@ -25,7 +25,13 @@ class TransactionCollectionFactory
         return $this;
     }
 
-    protected function generateTransaction( string $start_date ): array
+    public function startDate(string $startDate): self
+    {
+        $this->startDate = $startDate;
+        return $this;
+    }
+
+    protected function generateTransaction(string $start_date): array
     {
         $amount = fake()->numberBetween(1000, 80000) * 10;
         $date = fake()->dateTimeInInterval($start_date, '+12 hours');
@@ -67,7 +73,7 @@ class TransactionCollectionFactory
         ];
     }
 
-    protected function generateSubTransactions( int $total ): array
+    protected function generateSubTransactions(int $total): array
     {
         $count = fake()->numberBetween(2, 4);
         $amounts = array_map(
@@ -131,16 +137,6 @@ class TransactionCollectionFactory
         }
 
         return $result;
-    }
-
-    private function getStartDate()
-    {
-        return $this->startDate?? $this->startDate = '-6 months';
-    }
-
-    private function getCount()
-    {
-        return $this->count;
     }
 
 }
