@@ -11,16 +11,11 @@ class ExportController extends Controller
 {
     public function preview(TransactionExportRequest $request, ExportCriteria $criteria, YnabBudgetExportService $exporter )
     {
-        //dump( $criteria );
-
-       // dd( $request->all() );
-
         // Populate the ExportCriteria object from $request
         // Create new BudgetExporter object with YnabApiService and Criteria object
         // Call export() method on the BudgetExporter object
         // Return a TransactionCollection with all transactions
         // Flatten subtranactions in TransactionCollection into an array of transactions.
-
 
         $startDate = $request->validated( 'start_date' );
         $exporter->setStartDate( $startDate );
