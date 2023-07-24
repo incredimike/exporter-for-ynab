@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\Enums\TransactionClearedStatusEnum;
 use App\Enums\TransactionFlagColorEnum;
 use App\Factories\TransactionCollectionFactory;
-use App\Services\YnabBudgetExportService;
+use App\Budget\Services\YnabBudgetExportService;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;

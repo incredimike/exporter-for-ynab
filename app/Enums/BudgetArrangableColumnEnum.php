@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum ArrangableColumnEnum: string
+enum BudgetArrangableColumnEnum: string
 {
     case amount = 'amount';
     case date = 'date';

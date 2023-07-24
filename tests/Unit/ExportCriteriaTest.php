@@ -15,7 +15,9 @@ class ExportCriteriaTest extends TestCase
         $startDate = '2023-01-01';
 
         // Create the search criteria object
-        $exportCriteria = new ExportCriteria($startDate);
+        //$exportCriteria = new ExportCriteria($startDate);
+        $exportCriteria = new ExportCriteria();
+        $exportCriteria->setStartDate($startDate);
 
         $this->assertTrue($exportCriteria->isValid());
 

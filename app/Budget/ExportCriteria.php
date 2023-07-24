@@ -28,25 +28,22 @@ class ExportCriteria
         'payee_name',
     ];
 
-    public function __construct(
-        protected string $startDate,
-        protected string $endDate = '',
-        protected string $sortBy = 'date',
-        protected array $columns = [
-            'date',
-            'payee_name',
-            'amount',
-            'account_name',
-            'category_name',
-            'flag_color',
-            'approved',
-            'cleared',
-            'memo',
-        ],
-        protected array $include = [],
-        protected array $exclude = []
-    ) {}
-
+    protected string $startDate;
+    protected string $endDate = '';
+    protected string $sortBy = 'date';
+    protected array $columns = [
+        'date',
+        'payee_name',
+        'amount',
+        'account_name',
+        'category_name',
+        'flag_color',
+        'approved',
+        'cleared',
+        'memo',
+    ];
+    protected array $include = [];
+    protected array $exclude = [];
 
     /**
      * @return string
@@ -124,6 +121,27 @@ class ExportCriteria
         }
 
         return empty($this->errors);
+    }
+
+    public function setStartDate(string $startDate): void
+    {
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * @param  string  $endDate
+     */
+    public function setEndDate(string $endDate): void
+    {
+        $this->endDate = $endDate;
+    }
+
+    /**
+     * @param  string  $sortBy
+     */
+    public function setSortBy(string $sortBy): void
+    {
+        $this->sortBy = $sortBy;
     }
 
 }

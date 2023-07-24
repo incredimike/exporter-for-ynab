@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Budget\Services;
 
 use App\Budget\ExportServiceInterface;
 use Illuminate\Support\Facades\Http;
