@@ -15,7 +15,7 @@ class ExportController extends Controller
         TransactionExporter $exporter,
         ExportCriteria $criteria,
     ) {
-        $token = env('YNAB_API_TOKEN', ''); // @todo update this with oauth token
+        $token = config('budget.ynab_api_key'); // @todo update this with oauth token
         $criteria->fromRequestArray($request->validated());
         $exporter->setToken($token);
         $collection = $exporter->export($criteria);
