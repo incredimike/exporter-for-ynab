@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Budget\ExportCriteria;
 use App\Enums\TransactionClearedStatusEnum;
 use App\Enums\TransactionFlagColorEnum;
 use App\Factories\TransactionCollectionFactory;
@@ -16,12 +17,13 @@ class FetchTransactionsTest extends TestCase
 
     private TransactionCollectionFactory $transaction_factory;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
         $this->transaction_factory = $this->app->make(TransactionCollectionFactory::class);
     }
 
-    public function test_can_fetch_transactions(): void
+    public function testCanFetchTransactions(): void
     {
         $count = 10;
         $start_date = '2023-01-01';
@@ -30,13 +32,13 @@ class FetchTransactionsTest extends TestCase
             'https://api.ynab.com/v1/*' => Http::response($this->generateResponseArray($count, $start_date))
         ]);
 
-        // set search criteria
-        $token = fake()->word();
         $exporter = new YnabBudgetExportService();
-        $exporter->setToken($token);
-        $exporter->setStartDate($start_date);
-        $exporter->setBudgetId('last-used');
+        $exporter->setToken(fake()->word());
 
+        $criteria = new ExportCriteria();
+        $criteria->setStartDate($start_date);
+
+        $exporter->setExportCriteria($criteria);
         $response = $exporter->execute();
 
         $this->assertCount($count, $response);
@@ -58,18 +60,18 @@ class FetchTransactionsTest extends TestCase
         ];
     }
 
-    protected function generateSubTransactions( int $total ): array
+    protected function generateSubTransactions(int $total): array
     {
-        $count = fake()->numberBetween(2, 4);
+        $count = fake()->biasedNumberBetween(2, 5, 'cos');
         $amounts = array_map(
-            static fn ($amount) => $amount*10,
-            $this->generateSubTransactionValues($total/10, $count)
-        ); // close enough for now.
+            static fn ($amount) => $amount * 10,
+            $this->generateSubTransactionValues($total / 10, $count)
+        ); // @todo this math does not seem to do an accurate split
 
         $transactions = [];
-        for($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             $transactions[] = [
-                'id'=> fake()->uuid(),
+                'id' => fake()->uuid(),
                 "transaction_id" => fake()->uuid(),
                 "amount" => $amounts[$i],
                 "memo" => fake()->words(5, true),
@@ -79,7 +81,7 @@ class FetchTransactionsTest extends TestCase
                 "category_name" => fake()->words(3, true),
                 "transfer_account_id" => fake()->randomElement([fake()->uuid(), null]),
                 "transfer_transaction_id" => fake()->randomElement([fake()->uuid(), null]),
-                "deleted"=> fake()->boolean(),
+                "deleted" => fake()->boolean(),
             ];
         }
         return $transactions;
@@ -87,44 +89,44 @@ class FetchTransactionsTest extends TestCase
 
     protected function generateSubTransactionValues($total, $count): array
     {
-            if ($count <= 0 || $total <= 0) {
-                return [];
-            }
+        if ($count <= 0 || $total <= 0) {
+            return [];
+        }
 
             $result = [];
             $remainingCount = $count;
 
             // Loop until the total is reduced to zero or we've filled the array
-            while ($total > 0 && $remainingCount > 0) {
-                // Generate a random integer between 1 and the total (inclusive)
-                /** @noinspection RandomApiMigrationInspection */
-                $value = rand(1, $total);
+        while ($total > 0 && $remainingCount > 0) {
+            // Generate a random integer between 1 and the total (inclusive)
+            /** @noinspection RandomApiMigrationInspection */
+            $value = rand(1, $total);
 
-                // If the generated value is greater than the remaining total,
-                // set it to the remaining total to avoid going over the target amount
-                if ($value > $total) {
-                    $value = $total;
-                }
-
-                // Add the value to the result array
-                $result[] = $value;
-
-                // Update the total and remaining count
-                $total -= $value;
-                $remainingCount--;
+            // If the generated value is greater than the remaining total,
+            // set it to the remaining total to avoid going over the target amount
+            if ($value > $total) {
+                $value = $total;
             }
+
+            // Add the value to the result array
+            $result[] = $value;
+
+            // Update the total and remaining count
+            $total -= $value;
+            $remainingCount--;
+        }
 
             // If there are still remaining slots in the array,
             // fill them with zeros to make sure the array has the desired count
-            while ($remainingCount > 0) {
-                $result[] = 0;
-                $remainingCount--;
-            }
-
-            return $result;
+        while ($remainingCount > 0) {
+            $result[] = 0;
+            $remainingCount--;
         }
 
-    protected function generateTransaction( string $start_date )
+            return $result;
+    }
+
+    protected function generateTransaction(string $start_date): array
     {
         $amount = fake()->numberBetween(1000, 80000) * 10;
         $date = fake()->dateTimeInInterval($start_date, '+12 hours');
@@ -161,7 +163,7 @@ class FetchTransactionsTest extends TestCase
             'deleted' => fake()->boolean(),
             'subtransactions' => fake()->randomElement([
                 $this->generateSubTransactions($amount),
-                array()
+                [], [], [] // hacky 1 in 4 chance generateSubTransactions() will run
             ])
         ];
     }

@@ -28,6 +28,8 @@ class ExportCriteria
         'payee_name',
     ];
 
+    private string $budgetId = 'last-used';
+
     protected string $startDate;
     protected string $endDate = '';
     protected string $sortBy = 'date';
@@ -45,41 +47,29 @@ class ExportCriteria
     protected array $include = [];
     protected array $exclude = [];
 
-    /**
-     * @return string
-     */
+
     public function getStartDate(): string
     {
         return $this->startDate;
     }
 
-    /**
-     * @return string
-     */
+
     public function getEndDate(): string
     {
         return $this->endDate;
     }
 
-    /**
-     * @return string
-     */
+
     public function getSortBy(): string
     {
         return $this->sortBy;
     }
 
-    /**
-     * @return array
-     */
     public function getColumns(): array
     {
         return $this->columns;
     }
 
-    /**
-     * @return array
-     */
     public function getInclude(): array
     {
         return $this->include;
@@ -144,4 +134,40 @@ class ExportCriteria
         $this->sortBy = $sortBy;
     }
 
+    /**
+     * @return string
+     */
+    public function getBudgetId(): string
+    {
+        return $this->budgetId;
+    }
+
+    /**
+     * @param  string  $budgetId
+     */
+    public function setBudgetId(string $budgetId): void
+    {
+        $this->budgetId = $budgetId;
+    }
+
+    public function setColumns(array $columns): void
+    {
+        $this->columns = $columns;
+    }
+
+    private function setInclude(array $include): void
+    {
+        $this->include = $include;
+    }
+
+    public function fromRequestArray(array $criteriaArray): self
+    {
+        $this->setStartDate($criteriaArray['start_date']);
+        $this->setEndDate($criteriaArray['end_date'] ?? '');
+        $this->setSortBy($criteriaArray['sort_by'] ?? 'date');
+        $this->setColumns($criteriaArray['columns'] ?? []);
+        $this->setInclude($criteriaArray['include'] ?? []);
+
+        return $this;
+    }
 }

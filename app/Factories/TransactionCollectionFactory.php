@@ -13,8 +13,8 @@ class TransactionCollectionFactory
     public function make()
     {
         $transactions = [];
-        for ($i=0; $i < $this->count; $i++) {
-            $transactions[] = $this->generateTransaction( $this->startDate );
+        for ($i = 0; $i < $this->count; $i++) {
+            $transactions[] = $this->generateTransaction($this->startDate);
         }
         return $transactions;
     }
@@ -77,14 +77,14 @@ class TransactionCollectionFactory
     {
         $count = fake()->numberBetween(2, 4);
         $amounts = array_map(
-            static fn ($amount) => $amount*10,
-            $this->generateSubTransactionValues($total/10, $count)
+            static fn ($amount) => $amount * 10,
+            $this->generateSubTransactionValues($total / 10, $count)
         ); // close enough for now.
 
         $transactions = [];
-        for($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             $transactions[] = [
-                'id'=> fake()->uuid(),
+                'id' => fake()->uuid(),
                 "transaction_id" => fake()->uuid(),
                 "amount" => $amounts[$i],
                 "memo" => fake()->words(5, true),
@@ -94,7 +94,7 @@ class TransactionCollectionFactory
                 "category_name" => fake()->words(3, true),
                 "transfer_account_id" => fake()->randomElement([fake()->uuid(), null]),
                 "transfer_transaction_id" => fake()->randomElement([fake()->uuid(), null]),
-                "deleted"=> fake()->boolean(),
+                "deleted" => fake()->boolean(),
             ];
         }
         return $transactions;
@@ -138,5 +138,4 @@ class TransactionCollectionFactory
 
         return $result;
     }
-
 }
