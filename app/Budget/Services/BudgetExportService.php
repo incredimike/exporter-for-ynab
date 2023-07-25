@@ -9,26 +9,24 @@ use Illuminate\Support\Facades\Http;
 abstract class BudgetExportService
 {
     protected ExportCriteria $criteria;
-    protected string $api_url = 'https://api.ynab.com/v1';
 
-    protected string $token = '';
+    protected string $token = ''; // @todo store in criteria?
 
-    protected Response $http_response;
+    protected Response $response;
 
     public function execute(): array
     {
-        $url = sprintf(
-            '%s/budgets/%s/transactions',
-            $this->api_url,
-            $this->getExportCriteria()->getBudgetId()
-        );
-        $this->http_response = Http::withToken($this->getToken())
-            ->get($url);
-        if ($this->http_response->failed()) {
+        $this->response = Http::withToken($this->getToken())
+            ->get($this->getRequestUrl());
+
+        if ($this->response->failed()) {
             return [];
         }
-        return $this->http_response->json('data.transactions', []);
+        return $this->response->json($this->getJsonKey(), []);
     }
+
+    abstract protected function getBaseApiUrl(): string;
+    abstract protected function getJsonKey(): string;
 
     public function getExportCriteria(): ExportCriteria
     {
@@ -52,6 +50,6 @@ abstract class BudgetExportService
 
     public function getLastHttpResponse(): Response
     {
-        return $this->http_response;
+        return $this->response;
     }
 }
