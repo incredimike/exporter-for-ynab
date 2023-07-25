@@ -10,7 +10,7 @@ class YnabBudgetExportService implements ExportServiceInterface
     protected string $api_url = 'https://api.ynab.com/v1';
     protected string $start_date = '';
     protected string $budget_id = 'last-used';
-    protected string $token;
+    protected string $token = '';
 
     public function __construct()
     {}
