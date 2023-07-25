@@ -19,7 +19,7 @@ class ExportController extends Controller
 
         $startDate = $request->validated( 'start_date' );
         $exporter->setStartDate( $startDate );
-        $exporter->setToken( env( 'YNAB_API_TOKEN' ) );
+        $exporter->setToken( env( 'YNAB_API_TOKEN', '' ) );
         $transactions = $exporter->execute();
 
         $data = [
