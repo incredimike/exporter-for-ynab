@@ -11,6 +11,11 @@ class TransactionCollection extends Collection
         [$transactions, $hasSubtransactions] = $this->partition(
             fn(array $transaction) => empty($transaction['subtransactions'])
         );
+
+        $transactions->transform(function ($transaction) {
+            unset($transaction['subtransactions']);
+            return $transaction;
+        });
         $hasSubtransactions->each(function ($transaction) use ($transactions) {
             foreach ($transaction['subtransactions'] as $sub) {
                 $new = [...$transaction, ...$sub];

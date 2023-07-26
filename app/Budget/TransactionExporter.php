@@ -3,6 +3,7 @@
 namespace App\Budget;
 
 use App\Budget\Services\YnabBudgetExportService;
+use App\Exceptions\BudgetServiceConnectionException;
 
 class TransactionExporter
 {
@@ -17,9 +18,10 @@ class TransactionExporter
     {
         $this->exportService->setExportCriteria($criteria ?? $this->criteria);
         $this->exportService->setToken($this->api_token);
-        return new TransactionCollection(
-            $this->exportService->execute()
-        );
+        $responseArray = $this->exportService->execute();
+
+
+        return new TransactionCollection($responseArray);
     }
 
     public function setCriteria(ExportCriteria $criteria): void
@@ -31,4 +33,14 @@ class TransactionExporter
     {
         $this->api_token = $token;
     }
+
+    public function getExportService(): YnabBudgetExportService
+    {
+        return $this->exportService;
+    }
+    public function getExportServiceName(): string
+    {
+        return $this->exportService->getServiceName();
+    }
+
 }
