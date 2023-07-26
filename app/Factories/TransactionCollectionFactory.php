@@ -9,12 +9,13 @@ class TransactionCollectionFactory
 {
     protected int $count = 5;
     protected string $startDate = '-6 months';
+    protected array $subTransactionCount = [2, 2];
 
     public function make()
     {
         $transactions = [];
-        for ($i=0; $i < $this->count; $i++) {
-            $transactions[] = $this->generateTransaction( $this->startDate );
+        for ($i = 0; $i < $this->count; $i++) {
+            $transactions[] = $this->generateTransaction($this->startDate);
         }
         return $transactions;
     }
@@ -28,6 +29,12 @@ class TransactionCollectionFactory
     public function startDate(string $startDate): self
     {
         $this->startDate = $startDate;
+        return $this;
+    }
+
+    public function subTransctionCount(int $count, int $max = null): self
+    {
+        $this->subTransactionCount = [$count, $max];
         return $this;
     }
 
@@ -75,16 +82,19 @@ class TransactionCollectionFactory
 
     protected function generateSubTransactions(int $total): array
     {
-        $count = fake()->numberBetween(2, 4);
+        $minLimit = $this->subTransactionCount[0];
+        $maxLimit = $this->subTransactionCount[1] ?? $minLimit;
+
+        $count = fake()->numberBetween($minLimit, $maxLimit);
         $amounts = array_map(
-            static fn ($amount) => $amount*10,
-            $this->generateSubTransactionValues($total/10, $count)
+            static fn ($amount) => $amount * 10,
+            $this->generateSubTransactionValues($total / 10, $count)
         ); // close enough for now.
 
         $transactions = [];
-        for($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             $transactions[] = [
-                'id'=> fake()->uuid(),
+                'id' => fake()->uuid(),
                 "transaction_id" => fake()->uuid(),
                 "amount" => $amounts[$i],
                 "memo" => fake()->words(5, true),
@@ -94,7 +104,7 @@ class TransactionCollectionFactory
                 "category_name" => fake()->words(3, true),
                 "transfer_account_id" => fake()->randomElement([fake()->uuid(), null]),
                 "transfer_transaction_id" => fake()->randomElement([fake()->uuid(), null]),
-                "deleted"=> fake()->boolean(),
+                "deleted" => fake()->boolean(),
             ];
         }
         return $transactions;
@@ -138,5 +148,4 @@ class TransactionCollectionFactory
 
         return $result;
     }
-
 }

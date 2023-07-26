@@ -2,56 +2,31 @@
 
 namespace App\Budget\Services;
 
-use App\Budget\ExportServiceInterface;
-use Illuminate\Support\Facades\Http;
-
-class YnabBudgetExportService implements ExportServiceInterface
+class YnabBudgetExportService extends BudgetExportService
 {
-    protected string $api_url = 'https://api.ynab.com/v1';
-    protected string $start_date = '';
-    protected string $budget_id = 'last-used';
-    protected string $token = '';
+    protected string $base_api_url = 'https://api.ynab.com/v1';
+    protected string $transaction_list_uri = '/budgets/%s/transactions';
 
-    public function __construct()
-    {}
-
-    public function execute(): array
+    protected function getBaseApiUrl(): string
     {
-        $url = sprintf(
-            '%s/budgets/%s/transactions',
-            $this->api_url,
-            $this->getBudgetId()
+        return $this->base_api_url;
+    }
+
+    protected function getTransactionListUrl(): string
+    {
+        return $this->base_api_url . $this->transaction_list_uri;
+    }
+
+    protected function getRequestUrl(): string
+    {
+        return sprintf(
+            $this->getTransactionListUrl(),
+            $this->getExportCriteria()->getBudgetId()
         );
-        $response = Http::withToken($this->getToken())
-            ->get($url);
-        if ($response->failed()) {
-            return [];
-        }
-        return $response->json('data.transactions');
     }
 
-    public function setStartDate(string $start_date): void
+    protected function getJsonKey(): string
     {
-        $this->start_date = $start_date;
-    }
-
-    public function setBudgetId(string $string): void
-    {
-        $this->budget_id = $string;
-    }
-
-    public function setToken(string $token): void
-    {
-        $this->token = $token;
-    }
-
-    private function getBudgetId(): string
-    {
-        return $this->budget_id;
-    }
-
-    private function getToken(): string
-    {
-        return $this->token;
+        return 'data.transactions';
     }
 }
