@@ -11,14 +11,13 @@ class TransactionExporter
 
     public function __construct(
         private readonly YnabBudgetExportService $exportService
-    ) {}
+    ) {} // phpcs:ignore
 
     public function export(ExportCriteria $criteria = null): TransactionCollection
     {
         $this->exportService->setExportCriteria($criteria ?? $this->criteria);
-        $this->exportService->setToken( $this->api_token );
+        $this->exportService->setToken($this->api_token);
         return new TransactionCollection(
-            //[]
             $this->exportService->execute()
         );
     }

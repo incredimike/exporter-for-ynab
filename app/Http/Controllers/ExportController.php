@@ -20,8 +20,7 @@ class ExportController extends Controller
         $exporter->setToken($token);
         $collection = $exporter->export($criteria);
 
-        $transactions = $collection->flattenTransactions()->toArray();
-        //$transactions = $transactionCollection->toArray();
+        $transactions = $collection->flattenTransactions();
 
         return response()->json([
             'success' => true,

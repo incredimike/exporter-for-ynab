@@ -13,24 +13,19 @@ class TransactionCollection extends Collection
 
     public function flattenTransactions(): TransactionCollection
     {
-//        $subtransactions = $this->where('subtransactions', '!=', null)
-//            ->each(function ($transaction) {
-//                return []
-//            });
-        [$originals, $hasSubtransactions] = $this->partition(function (array $transaction) {
-            return empty($transaction['subtransactions']);
-        });
+        [$transactions, $hasSubtransactions] = $this->partition(
+            fn(array $transaction) => empty($transaction['subtransactions'])
+        );
 
-        $subtransactions = $hasSubtransactions->each(function ($transaction) use ($originals) {
+        $hasSubtransactions->each(function ($transaction) use ($transactions) {
             foreach ($transaction['subtransactions'] as $sub) {
-                $originals->add([
-                    ... $transaction, ...$sub
-                ]);
+                $new = [...$transaction, ...$sub];
+                $new['parent_id'] = $transaction['id'];
+                unset($new['subtransactions']);
+                $transactions->add($new);
             }
         });
 
-        // @todo make this work correctly.
-
-        return $originals;
+        return $transactions;
     }
 }

@@ -95,19 +95,19 @@ class ExportCriteria
         // Validate the columns
         $unexpected_columns = array_diff($this->columns, $this->allowed_columns);
         if (!empty($unexpected_columns)) {
-            $this->errors[] = 'Columns contains unexpected values: '. implode(', ', $unexpected_columns);
+            $this->errors[] = 'Columns contains unexpected values: ' . implode(', ', $unexpected_columns);
         }
 
         // Validate the include columns
         $unexpected_columns = array_diff($this->include, $this->allowed_columns);
         if (!empty($unexpected_columns)) {
-            $this->errors[] = 'Include contains unexpected values: '. implode(', ', $unexpected_columns);
+            $this->errors[] = 'Include contains unexpected values: ' . implode(', ', $unexpected_columns);
         }
 
         // Validate the exclude columns
         $unexpected_columns = array_diff($this->exclude, $this->allowed_columns);
         if (!empty($unexpected_columns)) {
-            $this->errors[] = 'Exclude contains unexpected values: '. implode(', ', $unexpected_columns);
+            $this->errors[] = 'Exclude contains unexpected values: ' . implode(', ', $unexpected_columns);
         }
 
         return empty($this->errors);
