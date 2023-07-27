@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Budget\ExportCriteria;
 use App\Factories\TransactionCollectionFactory;
-use App\Budget\Services\YnabBudgetExportService;
+use App\Budget\Services\YnabTransactionsExportService;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -30,7 +30,7 @@ class FetchTransactionsTest extends TestCase
             'https://api.ynab.com/v1/*' => Http::response($this->generateResponseArray($count, $start_date))
         ]);
 
-        $exporter = new YnabBudgetExportService();
+        $exporter = new YnabTransactionsExportService();
         $exporter->setToken(fake()->word());
 
         $criteria = new ExportCriteria();

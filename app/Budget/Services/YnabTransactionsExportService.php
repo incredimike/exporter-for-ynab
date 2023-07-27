@@ -2,7 +2,7 @@
 
 namespace App\Budget\Services;
 
-class YnabBudgetExportService extends BudgetExportService
+class YnabTransactionsExportService extends BudgetExportService
 {
     protected string $service_url = 'https://api.ynab.com/v1';
     protected string $service_name = 'YNAB';

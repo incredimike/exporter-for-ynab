@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Budget\TransactionExporter;
 use App\Budget\ExportCriteria;
-use App\Budget\Services\YnabBudgetExportService;
+use App\Budget\Services\YnabTransactionsExportService;
 use App\Http\Requests\TransactionExportRequest;
 use Illuminate\Http\Request;
 
@@ -20,7 +20,7 @@ class ExportController extends Controller
         $exporter->setToken($token);
         $collection = $exporter->export($criteria);
 
-        $transactions = $collection->flattenTransactions();
+        $transactions = $collection->flatten();
 
         return response()->json([
             'success' => true,
