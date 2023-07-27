@@ -2,16 +2,22 @@
 
 namespace App\Budget;
 
+use App\DTOs\TransactionDTO;
 use Illuminate\Support\Collection;
 
-class TransactionCollection extends Collection
+class TransactionCollection
 {
-    public function flattenTransactions(): TransactionCollection
+    private Collection $transactions;
+
+    public function __construct(array $transactions)
     {
-        [$transactions, $hasSubtransactions] = $this->partition(
+        $this->transactions = collect($transactions);
+    }
+    public function flatten(): TransactionCollection
+    {
+        [$transactions, $hasSubtransactions] = $this->transactions->partition(
             fn(array $transaction) => empty($transaction['subtransactions'])
         );
-
         $transactions->transform(function ($transaction) {
             unset($transaction['subtransactions']);
             return $transaction;
@@ -24,7 +30,12 @@ class TransactionCollection extends Collection
                 $transactions->add($new);
             }
         });
+        $this->transactions = $transactions;
+        return $this;
+    }
 
-        return $transactions;
+    public function getTransations(): Collection
+    {
+        return $this->transactions;
     }
 }
