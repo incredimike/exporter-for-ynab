@@ -34,9 +34,11 @@ class TransactionCollection
         return $this;
     }
 
-    public function getTransations(): Collection
+    public function getTransactions(): array
     {
-        return $this->transactions;
+        return $this->transactions
+            ->mapInto(TransactionDTO::class)
+            ->all();
     }
 
     public function getCollection(): Collection

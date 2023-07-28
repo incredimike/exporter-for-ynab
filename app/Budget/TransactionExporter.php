@@ -21,10 +21,8 @@ class TransactionExporter
     public function run(ExportCriteria $criteria = null): TransactionCollection
     {
         $criteria = $criteria ?? $this->criteria;
-
         $this->budgetRepository->setToken($this->api_token);
-        $responseArray = $this->budgetRepository->getTransactionsSince($criteria->getStartDate());
-        return new TransactionCollection($responseArray);
+        return $this->budgetRepository->getTransactionsSince($criteria->getStartDate());
     }
 
     public function setToken(string $token): void

@@ -47,17 +47,17 @@ class FetchTransactionsCommand extends Command
         try {
             $transactions = $exporter->run($criteria)->flatten();
             $results = [];
-            foreach ($transactions->getTransations() as $transaction) {
+            foreach ($transactions->getTransactions() as $transaction) {
                 $results[] = [
-                    $transaction['date'],
-                    $transaction['payee_name'],
-                    $transaction['amount'],
-                    $transaction['account_name'],
-                    $transaction['category_name'],
-                    $transaction['flag_color'],
-                    $transaction['approved'],
-                    $transaction['cleared'],
-                    //$transaction['memo'],
+                    $transaction->date,
+                    $transaction->payee_name,
+                    $transaction->amount,
+                    $transaction->account_name,
+                    $transaction->category_name,
+                    $transaction->flag_color,
+                    $transaction->approved,
+                    $transaction->cleared,
+                    //$transaction->memo,
                 ];
             }
             $this->table(

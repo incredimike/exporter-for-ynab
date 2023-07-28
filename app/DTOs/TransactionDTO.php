@@ -5,6 +5,7 @@ namespace App\DTOs;
 use App\Enums\TransactionClearedEnum;
 use App\Enums\TransactionFlagColorEnum;
 use Illuminate\Validation\Rules\Enum;
+
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class TransactionDTO extends ValidatedDTO
@@ -24,11 +25,11 @@ class TransactionDTO extends ValidatedDTO
             'id'                  => ['required', 'string'],
             'category_name'       => ['string'],
             'category_id'         => [], // uuid
-            'flag_color'          => [new Enum(TransactionFlagColorEnum::class)],
+            'flag_color'          => ['nullable', new Enum(TransactionFlagColorEnum::class)],
             'memo'                => [], // memo
-            'payee_id'            => ['uuid'],
-            'payee_name'          => ['string'],
-            'split_parent'        => ['uuid'],
+            'payee_id'            => ['nullable','uuid'],
+            'payee_name'          => ['nullable','string'],
+            'split_parent'        => ['nullable','uuid'],
             'subtransactions'     => ['array'],
             'transfer_account_id' => [], // uuid
         ];

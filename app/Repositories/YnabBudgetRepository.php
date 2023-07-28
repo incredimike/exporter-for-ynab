@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Budget\TransactionCollection;
+use App\DTOs\TransactionDTO;
+use App\Exceptions\BudgetConnectionException;
 use App\Interfaces\BudgetRepositoryInterface;
 
 class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryInterface
@@ -15,7 +18,7 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->serviceName;
     }
 
-    public function getTransactionsSince(string $date): array
+    public function getTransactionsSince(string $date): TransactionCollection
     {
         $base_url = sprintf(
             $this->serviceUrl .  '/budgets/%s/transactions',
@@ -25,17 +28,22 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
             'since_date' => $date,
         ]);
 
-        return $this->fetchJson($base_url . '?' . $query_params, 'data.transactions');
+        $transactions = $this->fetchJson($base_url . '?' . $query_params, 'data.transactions');
+        return new TransactionCollection($transactions);
     }
 
-    public function getTransaction(string $id): array
+    /**
+     * @throws BudgetConnectionException
+     */
+    public function getTransaction(string $id): TransactionDTO
     {
         $url = sprintf(
             $this->serviceUrl . '/budgets/%s/transactions/%s',
             $this->budgetId,
             $id
         );
-        return $this->fetchJson($url, 'data.transaction');
+        $data = $this->fetchJson($url, 'data.transaction');
+        return TransactionDTO::fromArray($data);
     }
 
     public function getBudgetId(): string

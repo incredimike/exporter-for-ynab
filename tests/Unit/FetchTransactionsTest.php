@@ -62,5 +62,4 @@ class FetchTransactionsTest extends TestCase
             ]
         ];
     }
-
 }

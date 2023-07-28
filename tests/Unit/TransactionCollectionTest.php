@@ -28,7 +28,7 @@ class TransactionCollectionTest extends TestCase
             ->make();
 
         $transactions = new TransactionCollection($transactions);
-        $this->assertCount($count, $transactions->getTransations()->toArray());
+        $this->assertCount($count, $transactions->getTransactions());
         //$this->assertInstanceOf(TransactionCollection::class, $transactions);
         //$this->assertInstanceOf(TransactionDTO::class, $transactions->first());
     }
