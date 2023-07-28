@@ -17,7 +17,7 @@ class ExportController extends Controller
         $token = config('budget.ynab_api_key'); // @todo update this with oauth token
         $criteria->fromRequestArray($request->validated());
         $exporter->setToken($token);
-        $collection = $exporter->export($criteria);
+        $collection = $exporter->run($criteria);
 
         $transactions = $collection->flatten();
 
