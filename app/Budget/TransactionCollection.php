@@ -38,4 +38,14 @@ class TransactionCollection
     {
         return $this->transactions;
     }
+
+    public function getCollection(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function count(): int
+    {
+        return $this->transactions->count();
+    }
 }

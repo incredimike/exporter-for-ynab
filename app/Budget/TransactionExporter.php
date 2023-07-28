@@ -2,6 +2,7 @@
 
 namespace App\Budget;
 
+use App\Budget\Services\BudgetExportService;
 use App\Budget\Services\YnabTransactionsExportService;
 use App\Exceptions\BudgetServiceConnectionException;
 
@@ -39,7 +40,7 @@ class TransactionExporter
         $this->api_token = $token;
     }
 
-    public function getExportService(): YnabTransactionsExportService
+    public function getExportService(): BudgetExportService
     {
         return $this->exportService;
     }

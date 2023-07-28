@@ -46,9 +46,9 @@ class FetchTransactionsCommand extends Command
             $startDate
         ));
         try {
-            $transactions = $exporter->export($criteria)->flattenTransactions();
+            $transactions = $exporter->export($criteria)->flatten();
             $results = [];
-            foreach ($transactions as $transaction) {
+            foreach ($transactions->getTransations() as $transaction) {
                 $results[] = [
                     $transaction['date'],
                     $transaction['payee_name'],
