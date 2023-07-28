@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Budget\ExportCriteria;
 use App\Budget\TransactionCollection;
 use App\Budget\TransactionExporter;
+use App\Exceptions\BudgetConnectionException;
 use App\Factories\TransactionCollectionFactory;
 use App\Repositories\YnabBudgetRepository;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -23,6 +24,9 @@ class FetchTransactionsTest extends TestCase
         $this->transaction_factory = $this->app->make(TransactionCollectionFactory::class);
     }
 
+    /**
+     * @throws BudgetConnectionException
+     */
     public function testCanFetchTransactions(): void
     {
         $count = 10;
@@ -33,16 +37,12 @@ class FetchTransactionsTest extends TestCase
         ]);
 
         $repository = new YnabBudgetRepository();
-        $repository->setToken(fake()->word());
-
         $criteria = new ExportCriteria();
         $criteria->setStartDate($start_date);
 
         $exporter = new TransactionExporter($repository, $criteria);
         $exporter->setToken(fake()->word()); // fix this double set token
-
-
-        $response = $exporter->export();
+        $response = $exporter->run();
 
         $this->assertSame($count, $response->getCollection()->count());
         $this->assertEquals($start_date, $response->getCollection()[0]['date']);

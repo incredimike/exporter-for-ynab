@@ -2,7 +2,7 @@
 
 namespace App\Budget;
 
-use App\Exceptions\BudgetServiceConnectionException;
+use App\Exceptions\BudgetConnectionException;
 use App\Repositories\BudgetRepository;
 use App\Repositories\YnabBudgetRepository;
 
@@ -16,9 +16,9 @@ class TransactionExporter
     ) {} // phpcs:ignore
 
     /**
-     * @throws BudgetServiceConnectionException
+     * @throws BudgetConnectionException
      */
-    public function export(ExportCriteria $criteria = null): TransactionCollection
+    public function run(ExportCriteria $criteria = null): TransactionCollection
     {
         $criteria = $criteria ?? $this->criteria;
 

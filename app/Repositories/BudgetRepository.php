@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Budget\ExportCriteria;
-use App\Exceptions\BudgetServiceConnectionException;
+use App\Exceptions\BudgetConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
@@ -17,11 +17,10 @@ abstract class BudgetRepository
 
     public function fetchJson(string $url, string $jsonKey): array
     {
-        $this->response = Http::withToken($this->getToken())
-            ->get($url);
+        $this->response = Http::withToken($this->getToken())->get($url);
 
         if ($this->response->failed()) {
-            throw new BudgetServiceConnectionException(
+            throw new BudgetConnectionException(
                 get_class($this) . ' cannot connect connect to API',
                 $this->response->status()
             );

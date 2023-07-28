@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Budget\ExportCriteria;
 use App\Budget\TransactionExporter;
-use App\Exceptions\BudgetServiceConnectionException;
+use App\Exceptions\BudgetConnectionException;
 use Illuminate\Console\Command;
 
 class FetchTransactionsCommand extends Command
@@ -45,7 +45,7 @@ class FetchTransactionsCommand extends Command
             $startDate
         ));
         try {
-            $transactions = $exporter->export($criteria)->flatten();
+            $transactions = $exporter->run($criteria)->flatten();
             $results = [];
             foreach ($transactions->getTransations() as $transaction) {
                 $results[] = [
@@ -66,7 +66,7 @@ class FetchTransactionsCommand extends Command
                 'box'
             );
             $this->info('Fetched ' . $transactions->count() . ' transactions from the API.');
-        } catch (BudgetServiceConnectionException $e) {
+        } catch (BudgetConnectionException $e) {
             $this->error($e->getMessage());
 
             return;
