@@ -2,17 +2,17 @@
 
 namespace App\Budget;
 
-use App\Budget\Services\BudgetExportService;
-use App\Budget\Services\YnabTransactionsExportService;
 use App\Exceptions\BudgetServiceConnectionException;
+use App\Repositories\BudgetRepository;
+use App\Repositories\YnabBudgetRepository;
 
 class TransactionExporter
 {
-    private ExportCriteria $criteria;
     private string $api_token;
 
     public function __construct(
-        private readonly YnabTransactionsExportService $exportService
+        private readonly YnabBudgetRepository $budgetRepository,
+        private readonly ExportCriteria $criteria
     ) {} // phpcs:ignore
 
     /**
@@ -20,19 +20,11 @@ class TransactionExporter
      */
     public function export(ExportCriteria $criteria = null): TransactionCollection
     {
-        $this->exportService->setExportCriteria($criteria ?? $this->criteria);
-        $this->exportService->setToken($this->api_token);
-        $responseArray = $this->exportService->execute();
+        $criteria = $criteria ?? $this->criteria;
 
-        //
-
-
+        $this->budgetRepository->setToken($this->api_token);
+        $responseArray = $this->budgetRepository->getTransactionsSince($criteria->getStartDate());
         return new TransactionCollection($responseArray);
-    }
-
-    public function setCriteria(ExportCriteria $criteria): void
-    {
-        $this->criteria = $criteria;
     }
 
     public function setToken(string $token): void
@@ -40,12 +32,8 @@ class TransactionExporter
         $this->api_token = $token;
     }
 
-    public function getExportService(): BudgetExportService
-    {
-        return $this->exportService;
-    }
     public function getExportServiceName(): string
     {
-        return $this->exportService->getServiceName();
+        return $this->budgetRepository->getServiceName();
     }
 }

@@ -19,3 +19,4 @@ yarn-error.log
 /.vscode
 /draft.yaml
 /.blueprint
+/tests/fixtures/small-ynab-transactions-response.json

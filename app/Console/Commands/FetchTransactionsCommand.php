@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Budget\ExportCriteria;
 use App\Budget\TransactionExporter;
 use App\Exceptions\BudgetServiceConnectionException;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class FetchTransactionsCommand extends Command

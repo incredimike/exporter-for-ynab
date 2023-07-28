@@ -1,23 +1,22 @@
 <?php
 
-namespace App\Budget\Services;
+namespace App\Repositories;
 
 use App\Budget\ExportCriteria;
 use App\Exceptions\BudgetServiceConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
-abstract class BudgetExportService
+abstract class BudgetRepository
 {
-    protected ExportCriteria $criteria;
-
-    protected string $token = ''; // @todo store in criteria?
+    protected ExportCriteria $criteria; // remove this too.
 
     protected Response $response;
 
-    public function execute(): array
+    protected string $token = '';
+
+    public function fetchJson(string $url, string $jsonKey): array
     {
-        $url = $this->getRequestUrl();
         $this->response = Http::withToken($this->getToken())
             ->get($url);
 
@@ -27,19 +26,7 @@ abstract class BudgetExportService
                 $this->response->status()
             );
         }
-        return $this->response->json($this->getJsonKey(), []);
-    }
-
-    abstract protected function getJsonKey(): string;
-
-    public function getExportCriteria(): ExportCriteria
-    {
-        return $this->criteria;
-    }
-
-    public function setExportCriteria(ExportCriteria $criteria): void
-    {
-        $this->criteria = $criteria;
+        return $this->response->json($jsonKey, []);
     }
 
     public function setToken(string $token): void

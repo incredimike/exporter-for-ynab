@@ -3,8 +3,10 @@
 namespace Tests\Unit;
 
 use App\Budget\ExportCriteria;
+use App\Budget\TransactionCollection;
+use App\Budget\TransactionExporter;
 use App\Factories\TransactionCollectionFactory;
-use App\Budget\Services\YnabTransactionsExportService;
+use App\Repositories\YnabBudgetRepository;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -30,17 +32,20 @@ class FetchTransactionsTest extends TestCase
             'https://api.ynab.com/v1/*' => Http::response($this->generateResponseArray($count, $start_date))
         ]);
 
-        $exporter = new YnabTransactionsExportService();
-        $exporter->setToken(fake()->word());
+        $repository = new YnabBudgetRepository();
+        $repository->setToken(fake()->word());
 
         $criteria = new ExportCriteria();
         $criteria->setStartDate($start_date);
 
-        $exporter->setExportCriteria($criteria);
-        $response = $exporter->execute();
+        $exporter = new TransactionExporter($repository, $criteria);
+        $exporter->setToken(fake()->word()); // fix this double set token
 
-        $this->assertCount($count, $response);
-        $this->assertEquals($start_date, $response[0]['date']);
+
+        $response = $exporter->export();
+
+        $this->assertSame($count, $response->getCollection()->count());
+        $this->assertEquals($start_date, $response->getCollection()[0]['date']);
     }
 
     protected function generateResponseArray(int $count = 5, string $startDate = '-6 months'): array

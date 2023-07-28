@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Budget\TransactionExporter;
 use App\Budget\ExportCriteria;
-use App\Budget\Services\YnabTransactionsExportService;
+use App\Budget\TransactionExporter;
 use App\Http\Requests\TransactionExportRequest;
 use Illuminate\Http\Request;
 
