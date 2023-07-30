@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Budget\TransactionCollection;
 use App\DTOs\TransactionDTO;
-use App\Factories\TransactionCollectionFactory;
+use App\Factories\TransactionFactory;
 use Tests\TestCase;
 
 class TransactionCollectionTest extends TestCase
@@ -14,7 +14,7 @@ class TransactionCollectionTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->transaction_factory = $this->app->make(TransactionCollectionFactory::class);
+        $this->transaction_factory = $this->app->make(TransactionFactory::class);
     }
 
     public function testCanCreateCollection(): void
