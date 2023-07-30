@@ -3,8 +3,11 @@
 namespace Tests\Unit;
 
 use App\Budget\ExportCriteria;
+use App\Budget\TransactionCollection;
+use App\Budget\TransactionExporter;
+use App\Exceptions\BudgetConnectionException;
 use App\Factories\TransactionCollectionFactory;
-use App\Budget\Services\YnabBudgetExportService;
+use App\Repositories\YnabBudgetRepository;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -21,6 +24,9 @@ class FetchTransactionsTest extends TestCase
         $this->transaction_factory = $this->app->make(TransactionCollectionFactory::class);
     }
 
+    /**
+     * @throws BudgetConnectionException
+     */
     public function testCanFetchTransactions(): void
     {
         $count = 10;
@@ -30,17 +36,16 @@ class FetchTransactionsTest extends TestCase
             'https://api.ynab.com/v1/*' => Http::response($this->generateResponseArray($count, $start_date))
         ]);
 
-        $exporter = new YnabBudgetExportService();
-        $exporter->setToken(fake()->word());
-
+        $repository = new YnabBudgetRepository();
         $criteria = new ExportCriteria();
         $criteria->setStartDate($start_date);
 
-        $exporter->setExportCriteria($criteria);
-        $response = $exporter->execute();
+        $exporter = new TransactionExporter($repository, $criteria);
+        $exporter->setToken(fake()->word()); // fix this double set token
+        $response = $exporter->run();
 
-        $this->assertCount($count, $response);
-        $this->assertEquals($start_date, $response[0]['date']);
+        $this->assertSame($count, $response->getCollection()->count());
+        $this->assertEquals($start_date, $response->getCollection()[0]['date']);
     }
 
     protected function generateResponseArray(int $count = 5, string $startDate = '-6 months'): array
@@ -57,5 +62,4 @@ class FetchTransactionsTest extends TestCase
             ]
         ];
     }
-
 }

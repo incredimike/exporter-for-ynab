@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class BudgetServiceConnectionException extends Exception
+class BudgetConnectionException extends Exception
 {
     //
 }

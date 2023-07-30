@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum TransactionClearedStatusEnum: string
+enum TransactionClearedEnum: string
 {
     case cleared = 'cleared';
     case uncleared = 'uncleared';

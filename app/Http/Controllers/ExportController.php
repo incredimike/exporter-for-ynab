@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Budget\TransactionExporter;
 use App\Budget\ExportCriteria;
-use App\Budget\Services\YnabBudgetExportService;
+use App\Budget\TransactionExporter;
 use App\Http\Requests\TransactionExportRequest;
 use Illuminate\Http\Request;
 
@@ -18,9 +17,9 @@ class ExportController extends Controller
         $token = config('budget.ynab_api_key'); // @todo update this with oauth token
         $criteria->fromRequestArray($request->validated());
         $exporter->setToken($token);
-        $collection = $exporter->export($criteria);
+        $collection = $exporter->run($criteria);
 
-        $transactions = $collection->flattenTransactions();
+        $transactions = $collection->flatten();
 
         return response()->json([
             'success' => true,

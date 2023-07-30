@@ -2,7 +2,7 @@
 
 namespace App\Factories;
 
-use App\Enums\TransactionClearedStatusEnum;
+use App\Enums\TransactionClearedEnum;
 use App\Enums\TransactionFlagColorEnum;
 
 class TransactionCollectionFactory
@@ -51,7 +51,7 @@ class TransactionCollectionFactory
                 fake()->words(5, true),
                 null
             ]),
-            'cleared' => fake()->randomElement(TransactionClearedStatusEnum::cases())->value,
+            'cleared' => fake()->randomElement(TransactionClearedEnum::cases())->value,
             'approved' => fake()->boolean(),
             'flag_color' => fake()->randomElement(TransactionFlagColorEnum::cases())->value,
             'account_id' => fake()->uuid(),

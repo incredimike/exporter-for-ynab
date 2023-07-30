@@ -4,8 +4,7 @@ namespace App\Console\Commands;
 
 use App\Budget\ExportCriteria;
 use App\Budget\TransactionExporter;
-use App\Exceptions\BudgetServiceConnectionException;
-use Carbon\Carbon;
+use App\Exceptions\BudgetConnectionException;
 use Illuminate\Console\Command;
 
 class FetchTransactionsCommand extends Command
@@ -46,19 +45,19 @@ class FetchTransactionsCommand extends Command
             $startDate
         ));
         try {
-            $transactions = $exporter->export($criteria)->flattenTransactions();
+            $transactions = $exporter->run($criteria)->flatten();
             $results = [];
-            foreach ($transactions as $transaction) {
+            foreach ($transactions->getTransactions() as $transaction) {
                 $results[] = [
-                    $transaction['date'],
-                    $transaction['payee_name'],
-                    $transaction['amount'],
-                    $transaction['account_name'],
-                    $transaction['category_name'],
-                    $transaction['flag_color'],
-                    $transaction['approved'],
-                    $transaction['cleared'],
-                    //$transaction['memo'],
+                    $transaction->date,
+                    $transaction->payee_name,
+                    $transaction->amount,
+                    $transaction->account_name,
+                    $transaction->category_name,
+                    $transaction->flag_color,
+                    $transaction->approved,
+                    $transaction->cleared,
+                    //$transaction->memo,
                 ];
             }
             $this->table(
@@ -67,7 +66,7 @@ class FetchTransactionsCommand extends Command
                 'box'
             );
             $this->info('Fetched ' . $transactions->count() . ' transactions from the API.');
-        } catch (BudgetServiceConnectionException $e) {
+        } catch (BudgetConnectionException $e) {
             $this->error($e->getMessage());
 
             return;
