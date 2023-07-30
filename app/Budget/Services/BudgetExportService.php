@@ -3,6 +3,7 @@
 namespace App\Budget\Services;
 
 use App\Budget\ExportCriteria;
+use App\Exceptions\BudgetServiceConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
@@ -16,16 +17,19 @@ abstract class BudgetExportService
 
     public function execute(): array
     {
+        $url = $this->getRequestUrl();
         $this->response = Http::withToken($this->getToken())
-            ->get($this->getRequestUrl());
+            ->get($url);
 
         if ($this->response->failed()) {
-            return [];
+            throw new BudgetServiceConnectionException(
+                get_class($this) . ' cannot connect connect to API',
+                $this->response->status()
+            );
         }
         return $this->response->json($this->getJsonKey(), []);
     }
 
-    abstract protected function getBaseApiUrl(): string;
     abstract protected function getJsonKey(): string;
 
     public function getExportCriteria(): ExportCriteria

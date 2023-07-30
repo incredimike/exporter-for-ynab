@@ -4,25 +4,26 @@ namespace App\Budget\Services;
 
 class YnabBudgetExportService extends BudgetExportService
 {
-    protected string $base_api_url = 'https://api.ynab.com/v1';
-    protected string $transaction_list_uri = '/budgets/%s/transactions';
+    protected string $service_url = 'https://api.ynab.com/v1';
+    protected string $service_name = 'YNAB';
 
-    protected function getBaseApiUrl(): string
+    public function getServiceName(): string
     {
-        return $this->base_api_url;
-    }
-
-    protected function getTransactionListUrl(): string
-    {
-        return $this->base_api_url . $this->transaction_list_uri;
+        return $this->service_name;
     }
 
     protected function getRequestUrl(): string
     {
-        return sprintf(
-            $this->getTransactionListUrl(),
-            $this->getExportCriteria()->getBudgetId()
+        $criteria = $this->getExportCriteria();
+        $base_url = sprintf(
+            $this->service_url .  '/budgets/%s/transactions',
+            $criteria->getBudgetId()
         );
+        $query_params = http_build_query([
+            'since_date' => $criteria->getStartDate(),
+        ]);
+
+        return $base_url . '?' . $query_params ;
     }
 
     protected function getJsonKey(): string
