@@ -20,7 +20,7 @@ class TransactionExporter
     public function run(ExportCriteria $criteria = null): TransactionCollection
     {
         $criteria = $criteria ?? $this->criteria;
-        $this->budgetRepository->setToken($this->api_token);
+        $this->budgetRepository->setAccessToken($this->api_token);
         return $this->budgetRepository->findTransactionsSince($criteria->getStartDate());
     }
 

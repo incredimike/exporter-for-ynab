@@ -4,7 +4,10 @@ namespace App\Repositories;
 
 use App\Budget\TransactionCollection;
 use App\DTOs\TransactionDTO;
+use App\Exceptions\BudgetAuthorizationException;
 use App\Exceptions\BudgetConnectionException;
+use App\Exceptions\BudgetRateLimitException;
+use App\Exceptions\BudgetResourceNotFoundException;
 use App\Interfaces\BudgetRepositoryInterface;
 
 class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryInterface
@@ -13,6 +16,12 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
     protected string $serviceName = 'YNAB';
     protected string $serviceUrl = 'https://api.ynab.com/v1';
 
+    /**
+     * @throws BudgetResourceNotFoundException
+     * @throws BudgetAuthorizationException
+     * @throws BudgetRateLimitException
+     * @throws BudgetConnectionException
+     */
     public function fetchAccounts(): array
     {
         $url = sprintf(
@@ -32,11 +41,17 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         $this->budgetId = $budgetId;
     }
 
+    /**
+     * @throws BudgetResourceNotFoundException
+     * @throws BudgetAuthorizationException
+     * @throws BudgetRateLimitException
+     * @throws BudgetConnectionException
+     */
     public function fetchBudgets(bool $include_accounts = false): array
     {
         $url = sprintf(
             $this->serviceUrl . '/budgets',
-            $this->budgetId
+            $this->getBudgetId()
         );
         $params = http_build_query([
             'include_accounts' => $include_accounts,
@@ -44,6 +59,12 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url . '?' . $params, 'data.budgets');
     }
 
+    /**
+     * @throws BudgetResourceNotFoundException
+     * @throws BudgetConnectionException
+     * @throws BudgetAuthorizationException
+     * @throws BudgetRateLimitException
+     */
     public function fetchCategories(): array
     {
         $url = sprintf(
@@ -53,6 +74,12 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url, 'data.categories');
     }
 
+    /**
+     * @throws BudgetResourceNotFoundException
+     * @throws BudgetConnectionException
+     * @throws BudgetAuthorizationException
+     * @throws BudgetRateLimitException
+     */
     public function fetchPayees(): array
     {
         $url = sprintf(
@@ -67,6 +94,12 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->serviceName;
     }
 
+    /**
+     * @throws BudgetResourceNotFoundException
+     * @throws BudgetConnectionException
+     * @throws BudgetAuthorizationException
+     * @throws BudgetRateLimitException
+     */
     public function fetchTransactions(string $sinceDate): array
     {
         $url = sprintf(
@@ -80,6 +113,12 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url . '?' . $params, 'data.transactions');
     }
 
+    /**
+     * @throws BudgetResourceNotFoundException
+     * @throws BudgetAuthorizationException
+     * @throws BudgetRateLimitException
+     * @throws BudgetConnectionException
+     */
     public function findTransactionsSince(string $sinceDate): TransactionCollection
     {
         $transactions = $this->fetchTransactions($sinceDate);
@@ -95,6 +134,9 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
     }
 
     /**
+     * @throws BudgetResourceNotFoundException
+     * @throws BudgetAuthorizationException
+     * @throws BudgetRateLimitException
      * @throws BudgetConnectionException
      */
     public function fetchTransaction(string $id): array

@@ -16,11 +16,11 @@ use Tests\TestCase;
 
 class YnabBudgetRepositoryTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     */
+    private BudgetAccountFactory $accountFactory;
+    private BudgetFactory $budgetFactory;
+    private BudgetCategoryFactory $categoryFactory;
+    private BudgetPayeeFactory $payeeFactory;
 
-    private TransactionFactory $transactionFactory;
 
     public function setUp(): void
     {
