@@ -23,12 +23,11 @@ class YnabBudgetRepositoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Http::preventStrayRequests();
         $this->accountFactory  = $this->app->make(BudgetAccountFactory::class);
         $this->budgetFactory   = $this->app->make(BudgetFactory::class);
         $this->categoryFactory = $this->app->make(BudgetCategoryFactory::class);
         $this->payeeFactory    = $this->app->make(BudgetPayeeFactory::class);
-
-        Http::preventStrayRequests();
     }
 
     /**
@@ -46,7 +45,7 @@ class YnabBudgetRepositoryTest extends TestCase
         ]);
         $repository = new YnabBudgetRepository();
         $repository->setBudgetId($budgetId);
-        $response = $repository->getAccounts();
+        $response = $repository->fetchAccounts();
 
         $this->assertIsArray($response);
         $this->assertCount($count, $response);
@@ -65,7 +64,7 @@ class YnabBudgetRepositoryTest extends TestCase
             ))
         ]);
         $repository = new YnabBudgetRepository();
-        $response = $repository->getBudgets();
+        $response = $repository->fetchBudgets();
 
         $this->assertIsArray($response);
         $this->assertCount($count, $response);
@@ -86,7 +85,7 @@ class YnabBudgetRepositoryTest extends TestCase
         ]);
         $repository = new YnabBudgetRepository();
         $repository->setBudgetId($budgetId);
-        $response = $repository->getCategories();
+        $response = $repository->fetchCategories();
 
         $this->assertIsArray($response);
         $this->assertCount($count, $response);
@@ -107,7 +106,7 @@ class YnabBudgetRepositoryTest extends TestCase
         ]);
         $repository = new YnabBudgetRepository();
         $repository->setBudgetId($budgetId);
-        $response = $repository->getPayees();
+        $response = $repository->fetchPayees();
 
         $this->assertIsArray($response);
         $this->assertCount($count, $response);

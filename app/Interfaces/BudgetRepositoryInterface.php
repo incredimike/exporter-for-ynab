@@ -7,7 +7,11 @@ use App\DTOs\TransactionDTO;
 
 interface BudgetRepositoryInterface
 {
+    public function fetchAccounts(): array;
+    public function fetchBudgets(): array;
+    public function fetchCategories(): array;
+    public function fetchPayees(): array;
     public function getServiceName(): string;
-    public function getTransactionsSince(string $date): TransactionCollection;
-    public function getTransaction(string $id): TransactionDTO;
+    public function fetchTransactions(string $sinceDate): array;
+    public function fetchTransaction(string $id): array;
 }

@@ -13,7 +13,7 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
     protected string $serviceName = 'YNAB';
     protected string $serviceUrl = 'https://api.ynab.com/v1';
 
-    public function getAccounts(): array
+    public function fetchAccounts(): array
     {
         $url = sprintf(
             $this->serviceUrl . '/budgets/%s/accounts',
@@ -21,6 +21,7 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         );
         return $this->fetchJson($url, 'data.accounts');
     }
+
     public function getBudgetId(): string
     {
         return $this->budgetId;
@@ -31,7 +32,7 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         $this->budgetId = $budgetId;
     }
 
-    public function getBudgets(bool $include_accounts = false): array
+    public function fetchBudgets(bool $include_accounts = false): array
     {
         $url = sprintf(
             $this->serviceUrl . '/budgets',
@@ -43,7 +44,7 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url . '?' . $params, 'data.budgets');
     }
 
-    public function getCategories(): array
+    public function fetchCategories(): array
     {
         $url = sprintf(
             $this->serviceUrl . '/budgets/%s/categories',
@@ -52,12 +53,7 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url, 'data.categories');
     }
 
-    public function getServiceName(): string
-    {
-        return $this->serviceName;
-    }
-
-    public function getPayees(): array
+    public function fetchPayees(): array
     {
         $url = sprintf(
             $this->serviceUrl . '/budgets/%s/payees',
@@ -66,31 +62,48 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url, 'data.payees');
     }
 
-    public function getTransactions(string $since_date): TransactionCollection
+    public function getServiceName(): string
     {
-        $base_url = sprintf(
+        return $this->serviceName;
+    }
+
+    public function fetchTransactions(string $sinceDate): array
+    {
+        $url = sprintf(
             $this->serviceUrl .  '/budgets/%s/transactions',
             $this->budgetId
         );
-        $query_params = http_build_query([
-            'since_date' => $since_date,
+        $params = http_build_query([
+            'since_date' => $sinceDate,
         ]);
 
-        $transactions = $this->fetchJson($base_url . '?' . $query_params, 'data.transactions');
+        return $this->fetchJson($url . '?' . $params, 'data.transactions');
+    }
+
+    public function findTransactionsSince(string $sinceDate): TransactionCollection
+    {
+        $transactions = $this->fetchTransactions($sinceDate);
         return new TransactionCollection($transactions);
     }
 
     /**
      * @throws BudgetConnectionException
      */
-    public function getTransaction(string $id): TransactionDTO
+    public function findTransactionById(string $id): TransactionDTO
+    {
+        return TransactionDTO::fromArray($this->fetchTransaction($id));
+    }
+
+    /**
+     * @throws BudgetConnectionException
+     */
+    public function fetchTransaction(string $id): array
     {
         $url = sprintf(
             $this->serviceUrl . '/budgets/%s/transactions/%s',
             $this->budgetId,
             $id
         );
-        $data = $this->fetchJson($url, 'data.transaction');
-        return TransactionDTO::fromArray($data);
+        return $this->fetchJson($url, 'data.transaction');
     }
 }

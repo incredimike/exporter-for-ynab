@@ -3,7 +3,6 @@
 namespace App\Budget;
 
 use App\Exceptions\BudgetConnectionException;
-use App\Repositories\BudgetRepository;
 use App\Repositories\YnabBudgetRepository;
 
 class TransactionExporter
@@ -22,7 +21,7 @@ class TransactionExporter
     {
         $criteria = $criteria ?? $this->criteria;
         $this->budgetRepository->setToken($this->api_token);
-        return $this->budgetRepository->getTransactionsSince($criteria->getStartDate());
+        return $this->budgetRepository->findTransactionsSince($criteria->getStartDate());
     }
 
     public function setToken(string $token): void
