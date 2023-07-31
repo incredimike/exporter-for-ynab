@@ -2,7 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\BudgetAuthorizationException;
 use App\Exceptions\BudgetConnectionException;
+use App\Exceptions\BudgetRateLimitException;
 use App\Factories\BudgetAccountFactory;
 use App\Factories\BudgetCategoryFactory;
 use App\Factories\BudgetFactory;
@@ -94,7 +96,7 @@ class YnabBudgetRepositoryTest extends TestCase
     /**
      * @throws BudgetConnectionException
      */
-    public function testCanFetchPayees(): void
+    public function testFetchPayees(): void
     {
         $budgetId = 'last-used';
         $count = 10;
@@ -110,6 +112,63 @@ class YnabBudgetRepositoryTest extends TestCase
 
         $this->assertIsArray($response);
         $this->assertCount($count, $response);
+    }
+
+    public function testHandlesHttp500Error(): void
+    {
+        Http::fake([
+            'https://api.ynab.com/v1/budgets*' => Http::response(null, 500)
+        ]);
+
+        $repository = new YnabBudgetRepository();
+
+        $this->expectException(BudgetConnectionException::class);
+        $repository->fetchBudgets();
+    }
+
+    public function testHandlesHttp401UnauthorizedRequest(): void
+    {
+        Http::fake([
+            'https://api.ynab.com/v1/budgets*' => Http::response([], 401)
+        ]);
+
+        $repository = new YnabBudgetRepository();
+
+        $this->expectException(BudgetAuthorizationException::class);
+        $repository->fetchBudgets();
+    }
+
+    public function testHandlesHttp403SubscriptionIssue(): void
+    {
+        Http::fake([
+            'https://api.ynab.com/v1/budgets*' => Http::response([], 403)
+        ]);
+
+        $repository = new YnabBudgetRepository();
+
+        $this->expectException(BudgetAuthorizationException::class);
+        $repository->fetchBudgets();
+    }
+
+    public function testHandlesHttp429RateLimitingError(): void
+    {
+        Http::fake([
+            'https://api.ynab.com/v1/budgets*' => Http::response(
+                [
+                    'error' => [
+                        'id' => fake()->word(),
+                        'name' => 'Rate limit exceeded',
+                        'detail' => 'Rate limit exceeded',
+                    ]
+                ],
+                429
+            )
+        ]);
+
+        $repository = new YnabBudgetRepository();
+
+        $this->expectException(BudgetRateLimitException::class);
+        $repository->fetchBudgets();
     }
 
     protected function generateResponseArray(string $key, array $data): array
