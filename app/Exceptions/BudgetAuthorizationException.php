@@ -2,9 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class BudgetAuthorizationException extends Exception
+class BudgetAuthorizationException extends BudgetException
 {
     //
 }

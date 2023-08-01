@@ -9,7 +9,6 @@ use App\Factories\BudgetAccountFactory;
 use App\Factories\BudgetCategoryFactory;
 use App\Factories\BudgetFactory;
 use App\Factories\BudgetPayeeFactory;
-use App\Factories\TransactionFactory;
 use App\Repositories\YnabBudgetRepository;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -32,9 +31,6 @@ class YnabBudgetRepositoryTest extends TestCase
         $this->payeeFactory    = $this->app->make(BudgetPayeeFactory::class);
     }
 
-    /**
-     * @throws BudgetConnectionException
-     */
     public function testCanFetchAccounts(): void
     {
         $budgetId = 'last-used';
@@ -53,9 +49,6 @@ class YnabBudgetRepositoryTest extends TestCase
         $this->assertCount($count, $response);
     }
 
-    /**
-     * @throws BudgetConnectionException
-     */
     public function testCanFetchBudgets(): void
     {
         $count = 3;
@@ -72,9 +65,6 @@ class YnabBudgetRepositoryTest extends TestCase
         $this->assertCount($count, $response);
     }
 
-    /**
-     * @throws BudgetConnectionException
-     */
     public function testCanFetchCategories(): void
     {
         $budgetId = 'last-used';

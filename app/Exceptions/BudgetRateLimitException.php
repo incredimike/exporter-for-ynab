@@ -2,9 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class BudgetRateLimitException extends Exception
+class BudgetRateLimitException extends BudgetException
 {
     //
 }

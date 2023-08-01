@@ -2,9 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class BudgetResourceNotFoundException extends Exception
+class BudgetResourceNotFoundException extends BudgetException
 {
     //
 }
