@@ -31,16 +31,6 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url, 'data.accounts');
     }
 
-    public function getBudgetId(): string
-    {
-        return $this->budgetId;
-    }
-
-    public function setBudgetId(string $budgetId): void
-    {
-        $this->budgetId = $budgetId;
-    }
-
     /**
      * @throws BudgetResourceNotFoundException
      * @throws BudgetAuthorizationException
@@ -89,9 +79,9 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
         return $this->fetchJson($url, 'data.payees');
     }
 
-    public function getServiceName(): string
+    public function getBudgetId(): string
     {
-        return $this->serviceName;
+        return $this->budgetId;
     }
 
     /**
@@ -119,10 +109,14 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
      * @throws BudgetRateLimitException
      * @throws BudgetConnectionException
      */
-    public function findTransactionsSince(string $sinceDate): TransactionCollection
+    public function fetchTransaction(string $id): array
     {
-        $transactions = $this->fetchTransactions($sinceDate);
-        return new TransactionCollection($transactions);
+        $url = sprintf(
+            $this->serviceUrl . '/budgets/%s/transactions/%s',
+            $this->budgetId,
+            $id
+        );
+        return $this->fetchJson($url, 'data.transaction');
     }
 
     /**
@@ -139,13 +133,19 @@ class YnabBudgetRepository extends BudgetRepository implements BudgetRepositoryI
      * @throws BudgetRateLimitException
      * @throws BudgetConnectionException
      */
-    public function fetchTransaction(string $id): array
+    public function findTransactionsSince(string $sinceDate): TransactionCollection
     {
-        $url = sprintf(
-            $this->serviceUrl . '/budgets/%s/transactions/%s',
-            $this->budgetId,
-            $id
-        );
-        return $this->fetchJson($url, 'data.transaction');
+        $transactions = $this->fetchTransactions($sinceDate);
+        return new TransactionCollection($transactions);
+    }
+
+    public function getServiceName(): string
+    {
+        return $this->serviceName;
+    }
+
+    public function setBudgetId(string $budgetId): void
+    {
+        $this->budgetId = $budgetId;
     }
 }
