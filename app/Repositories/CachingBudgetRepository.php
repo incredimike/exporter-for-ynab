@@ -2,77 +2,70 @@
 
 namespace App\Repositories;
 
+use App\Cache\CacheKeyMaker;
 use App\Interfaces\BudgetRepositoryInterface;
 use Cache;
 
 class CachingBudgetRepository implements BudgetRepositoryInterface
 {
+    protected CacheKeyMaker $keyMaker;
     protected BudgetRepository $repository;
     protected string $serviceName = 'Cache';
 
-    public function __construct(BudgetRepository $repository)
+    public function __construct(BudgetRepository $repository, CacheKeyMaker $keys)
     {
         $this->repository = $repository;
-    }
+        $this->keyMaker = $keys;
 
-    private function makeCacheKey(string $id): string
-    {
-        return sprintf(
-            '%s.%s.%s',
-            strtolower($this->repository->getServiceName()),
-            $this->repository->getBudgetId(),
-            $id
-        );
+        $this->keyMaker->setServiceName($this->repository->getServiceName());
+        $this->keyMaker->setBudgetId($this->repository->getBudgetId());
     }
 
     public function fetchAccounts(): array
     {
-        return Cache::remember($this->makeCacheKey('accounts'), $minutes = 10, function () {
+        return Cache::remember($this->keyMaker->makeKey('accounts'), 10, function () {
             return $this->repository->fetchAccounts();
         });
     }
 
     public function fetchBudgets(bool $include_accounts = false): array
     {
-        return Cache::remember($this->makeCacheKey('budgets'), $minutes = 10, function () {
+        return Cache::remember($this->keyMaker->makeKey('budgets'), 10, function () {
             return $this->repository->fetchBudgets();
         });
     }
 
     public function fetchCategories(): array
     {
-        return Cache::remember($this->makeCacheKey('categories'), $minutes = 10, function () {
-            return $this->repository->fetchBudgets();
+        return Cache::remember($this->keyMaker->makeKey('categories'), 10, function () {
+            return $this->repository->fetchCategories();
         });
     }
 
     public function fetchPayees(): array
     {
-        return Cache::remember($this->makeCacheKey('payees'), $minutes = 10, function () {
+        return Cache::remember($this->keyMaker->makeKey('payees'), 10, function () {
             return $this->repository->fetchPayees();
         });
     }
 
     public function fetchTransactions(string $sinceDate): array
     {
-        return Cache::remember($this->makeCacheKey('transactions'), $minutes = 10, function () {
-            return $this->repository->fetchPayees();
+        return Cache::remember($this->keyMaker->makeKey('transactions'), 10, function () {
+            return $this->repository->fetchTransactions();
         });
     }
 
     public function getBudgetId(): string
     {
-        return $this->budgetId;
+        return $this->repository->getBudgetId();
     }
 
     public function fetchTransaction(string $id): array
     {
-        $url = sprintf(
-            $this->serviceUrl . '/budgets/%s/transactions/%s',
-            $this->budgetId,
-            $id
-        );
-        return $this->fetchJson($url, 'data.transaction');
+        return Cache::remember($this->keyMaker->makeKey('transactions'), 10, function () {
+            return $this->repository->fetchPayees();
+        });
     }
 
     public function getServiceName(): string
@@ -80,8 +73,4 @@ class CachingBudgetRepository implements BudgetRepositoryInterface
         return $this->serviceName . ' <- ' . $this->repository->getServiceName();
     }
 
-    public function setBudgetId(string $budgetId): void
-    {
-        $this->budgetId = $budgetId;
-    }
 }
