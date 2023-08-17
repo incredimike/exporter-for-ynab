@@ -5,7 +5,7 @@ namespace App\Factories;
 use App\Enums\TransactionClearedEnum;
 use App\Enums\TransactionFlagColorEnum;
 
-class TransactionCollectionFactory
+class TransactionFactory
 {
     protected int $count = 5;
     protected string $startDate = '-6 months';

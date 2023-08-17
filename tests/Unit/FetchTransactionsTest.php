@@ -6,7 +6,7 @@ use App\Budget\ExportCriteria;
 use App\Budget\TransactionCollection;
 use App\Budget\TransactionExporter;
 use App\Exceptions\BudgetConnectionException;
-use App\Factories\TransactionCollectionFactory;
+use App\Factories\TransactionFactory;
 use App\Repositories\YnabBudgetRepository;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
@@ -16,12 +16,12 @@ class FetchTransactionsTest extends TestCase
 {
     use WithFaker;
 
-    private TransactionCollectionFactory $transaction_factory;
+    private TransactionFactory $transaction_factory;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->transaction_factory = $this->app->make(TransactionCollectionFactory::class);
+        $this->transaction_factory = $this->app->make(TransactionFactory::class);
     }
 
     /**

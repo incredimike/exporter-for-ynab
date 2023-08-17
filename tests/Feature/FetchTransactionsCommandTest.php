@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use App\Factories\TransactionCollectionFactory;
+use App\Factories\TransactionFactory;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class FetchTransactionsCommandTest extends TestCase
 {
 
-    private TransactionCollectionFactory $transaction_factory;
+    private TransactionFactory $transaction_factory;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->transaction_factory = $this->app->make(TransactionCollectionFactory::class);
+        $this->transaction_factory = $this->app->make(TransactionFactory::class);
     }
 
 
