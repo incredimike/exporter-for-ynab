@@ -5,18 +5,14 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-<p align="center">
-  <a href="https://github.com/incredimike/exporter-for-ynab">![Logo]</a>
-</p>
-
 <h3 align="center">Transaction Exporter For YNAB</h3>
 
 <p align="center">
 Configurable transaction export tool for YNAB online budgeting tool.
 <br/>
 <br/>
-<a href="https://github.com/incredimike/exporter-for-ynab">View Demo</a>
-•
+<!-- <a href="https://github.com/incredimike/exporter-for-ynab">View Demo</a> 
+• -->
 <a href="https://github.com/incredimike/exporter-for-ynab/issues">Bug Reports</a>
 •
 <a href="https://github.com/incredimike/exporter-for-ynab/issues">Feature Requests</a>
@@ -38,19 +34,16 @@ Configurable transaction export tool for YNAB online budgeting tool.
 
 ## About The Project
 
-![Screen Shot](images/screenshot.png)
+This project aims to make exporting transaction data easier by allowing users 
+to save a "template" of export settings to be reused for future exports.
 
-This project was developer to experiment with Laravel 10.x by scratching an itch I've had for years: automating the export of my monthly household purchases.
+I wanted to build a webapp using the latest versions of Laravel, Vue.js and Alpine.js to experiment with the new tech. I really enjoy building using the Test Driven Development (TDD) methodology, but rarely have the opportunity on client projects.
 
-Built using Test Driven Development (TDD).
-
-## Built With
-
-This project leverages several frameworks.
-
-* [Laravel PHP Framework](https://laravel.com)
-* [Vue.JS](https://vuejs.org)
-* [Alpine.js](https://alpinejs.dev)
+### Built With
+[![Laravel]][Laravel-url]
+[![PostreSQL]][PostreSQL-url]
+[![Vue]][Vue-url]
+[![Alpine]][Alpine-url]
 
 ## Getting Started
 
@@ -81,9 +74,7 @@ cp .env.example .env
 4. Add your YNAB Developer API key to the .env file
 
 ```sh
-...
 YNAB_API_TOKEN=<YOUR_TOKEN_HERE>
-... 
 ```
 
 5. Install PHP Composer packages
@@ -117,7 +108,6 @@ Or you can run tests using the Sail docker containers:
 sail test
 ```
 
-
 ## Roadmap
 
 See the [open issues](https://github.com/incredimike/exporter-for-ynab/issues) for a list of proposed features (and known issues).
@@ -147,13 +137,11 @@ Distributed under the MIT License. See [LICENSE](https://github.com/incredimike/
 
 ## Acknowledgements
 
-* [YNAB](https://www.ynab.com) - Amazing online budgeting software!
-* [ImgShields](https://shields.io/)
-
+* [YNAB](https://www.ynab.com) - YNAB is short for "You Need A Budget", an amazing online budgeting & financial management software system.
+* [ImgShields](https://shields.io/) - ImgShields provide the images at the top of the README.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[tests-shield1]: https://github.com/incredimike/exporter-for-ynab/actions/workflows/tests.yml/badge.svg
 [tests-shield]: https://img.shields.io/github/actions/workflow/status/incredimike/exporter-for-ynab/tests.yml?style=for-the-badge
 [issues-shield]: https://img.shields.io/github/issues/incredimike/exporter-for-ynab.svg?style=for-the-badge
 [issues-url]: https://github.com/incredimike/exporter-for-ynab/issues
@@ -161,9 +149,13 @@ Distributed under the MIT License. See [LICENSE](https://github.com/incredimike/
 [license-url]: https://github.com/incredimike/exporter-for-ynab/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/incredimike
-[Logo]: resources/images/exporter-for-ynab-logo.png
 [screenshot]: images/screenshot.png
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
+
+[Alpine]: https://img.shields.io/badge/Alpine.js-2D3441?style=for-the-badge&logo=alpinedotjs&logoColor=77C1D2
+[Alpine-url]: https://alpine.dev
+[PostreSQL]: https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white
+[PostreSQL-url]: https://alpine.dev
+[Vue]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
+[Vue-url]: https://vuejs.org
+[Laravel]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
 [Laravel-url]: https://laravel.com
